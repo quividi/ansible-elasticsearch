@@ -17,7 +17,7 @@
     mode: "750"
   when: es_ssl_upload
 
-- name: Upload SSL/TLS keystore
+- name: Upload SSL/TLS keystore transport
   become: yes
   copy:
     src: "{{ es_ssl_keystore }}"
@@ -29,7 +29,7 @@
   notify: restart elasticsearch
   register: copy_keystore
 
-- name: Upload SSL/TLS truststore
+- name: Upload SSL/TLS truststore transport
   become: yes
   copy:
     src: "{{ es_ssl_truststore }}"
@@ -40,6 +40,18 @@
   when: es_ssl_upload and es_ssl_keystore and es_ssl_truststore
   notify: restart elasticsearch
   register: copy_truststore
+
+- name: Upload SSL/TLS keystore http
+  become: yes
+  copy:
+    src: "{{ es_ssl_keystore_http }}"
+    dest: "{{ es_ssl_certificate_path }}/{{ es_ssl_keystore_http | basename }}"
+    owner: "{{ es_user }}"
+    group: "{{ es_group }}"
+    mode: "640"
+  when: es_ssl_upload and es_ssl_keystore_http
+  notify: restart elasticsearch
+  register: copy_keystore_http
 
 - name: Upload SSL/TLS key and certificate
   become: yes

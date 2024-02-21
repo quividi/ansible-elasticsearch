@@ -52,8 +52,7 @@ xpack.security.transport.ssl.certificate_authorities: "{{ es_ssl_certificate_pat
 {% if es_enable_http_ssl and es_enable_auto_ssl_configuration %}
 xpack.security.http.ssl.enabled: true
 {% if es_ssl_keystore and es_ssl_truststore %}
-xpack.security.http.ssl.keystore.path: "{{ es_ssl_certificate_path }}/{{ es_ssl_keystore | basename }}"
-xpack.security.http.ssl.truststore.path: "{{ es_ssl_certificate_path }}/{{ es_ssl_truststore | basename }}"
+xpack.security.http.ssl.keystore.path: "{{ es_ssl_certificate_path }}/{{ es_ssl_keystore_http | basename }}"
 {% elif es_ssl_key and  es_ssl_certificate %}
 xpack.security.http.ssl.key: "{{ es_ssl_certificate_path }}/{{ es_ssl_key | basename }}"
 xpack.security.http.ssl.certificate: "{{ es_ssl_certificate_path }}/{{ es_ssl_certificate | basename }}"
