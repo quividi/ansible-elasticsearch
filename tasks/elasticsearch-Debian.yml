@@ -34,10 +34,6 @@
   when: es_use_repository
   become: true
   block:
-    - name: Debian - Install apt-transport-https to support https APT downloads
-      apt:
-        name: apt-transport-https
-        state: present
     - name: Debian - Add Elasticsearch repository key
       apt_key:
         url: '{{ es_apt_key }}'
