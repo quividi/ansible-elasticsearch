@@ -1,16 +1,16 @@
 ---
 - name: set fact change_api_password to false
-  set_fact: change_api_password=false
+  set_fact: change_api_password={{ false }}
 - name: set fact manage_native_users to false
-  set_fact: manage_native_users=false
+  set_fact: manage_native_users={{ false }}
 - name: set fact manage_native_users to true
-  set_fact: manage_native_users=true
+  set_fact: manage_native_users={{ true }}
   when: es_users is defined and es_users.native is defined and es_users.native.keys() |
     list | length > 0
 - name: set fact manage_native_role to false
-  set_fact: manage_native_roles=false
+  set_fact: manage_native_roles={{ false }}
 - name: set fact manage_native_roles to true
-  set_fact: manage_native_roles=true
+  set_fact: manage_native_roles={{ true }}
   when: es_roles is defined and es_roles.native is defined and es_roles.native.keys() |
     list | length > 0
 - name: initialize roles_to_ignore as empty list
@@ -45,7 +45,7 @@
   set_fact: native_users={{ es_users.native }}
   when: manage_native_users
 - name: set fact change_api_password to true
-  set_fact: change_api_password=true
+  set_fact: change_api_password={{ true }}
   when: manage_native_users and es_api_basic_auth_username in native_users and native_users[es_api_basic_auth_username].password
     is defined
 - name: Update API User Password
