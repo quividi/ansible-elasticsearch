@@ -1,105 +1,102 @@
 ---
 # Configure Elasticsearch Node
 
-#Create conf directory
+# Create conf directory
 - name: Create Configuration Directory
-  become: yes
+  become: true
   file:
-    path: "{{ es_conf_dir }}"
+    path: '{{ es_conf_dir }}'
     state: directory
     owner: root
-    group: "{{ es_group }}"
-    mode: "2750"
+    group: '{{ es_group }}'
+    mode: '2750'
 
-#Create pid directory
+# Create pid directory
 - name: Create PID Directory
-  become: yes
+  become: true
   file:
-    path: "{{ es_pid_dir }}"
+    path: '{{ es_pid_dir }}'
     state: directory
-    owner: "{{ es_user }}"
-    group: "{{ es_group }}"
-    mode: "755"
+    owner: '{{ es_user }}'
+    group: '{{ es_group }}'
+    mode: '755'
 
-#Create required directories
+# Create required directories
 - name: Create Others Directories
-  become: yes
+  become: true
   file:
-    path: "{{ item }}"
+    path: '{{ item }}'
     state: directory
-    owner: "{{ es_user }}"
-    group: "{{ es_group }}"
-    mode: "2750"
+    owner: '{{ es_user }}'
+    group: '{{ es_group }}'
+    mode: '2750'
   with_items:
-    - "{{ es_log_dir }}"
-    - "{{ es_data_dirs }}"
+    - '{{ es_log_dir }}'
+    - '{{ es_data_dirs }}'
 
-#Copy the config template
+# Copy the config template
 - name: Copy Configuration File
-  become: yes
+  become: true
   template:
     src: elasticsearch.yml.j2
-    dest: "{{ es_conf_dir }}/elasticsearch.yml"
+    dest: '{{ es_conf_dir }}/elasticsearch.yml'
     owner: root
-    group: "{{ es_group }}"
-    mode: "660"
-    force: yes
+    group: '{{ es_group }}'
+    mode: '660'
+    force: true
   register: system_change
   notify: restart elasticsearch
 
-#Copy the default file
+# Copy the default file
 - name: Copy Default File
-  become: yes
+  become: true
   template:
-    src: "{{ es_config_default }}"
-    dest: "{{ default_file }}"
+    src: '{{ es_config_default }}'
+    dest: '{{ default_file }}'
     owner: root
-    group: "{{ es_group }}"
-    mode: "660"
-    force: yes
+    group: '{{ es_group }}'
+    mode: '660'
+    force: true
   notify: restart elasticsearch
 
-#Copy the systemd specific file if systemd is installed
+# Copy the systemd specific file if systemd is installed
 - when: use_system_d and (m_lock_enabled or es_max_open_files is defined)
-  become: yes
+  become: true
   block:
     - name: Make sure destination dir exists
       file:
-        path: "{{ sysd_config_file | dirname }}"
+        path: '{{ sysd_config_file | dirname }}'
         state: directory
-        mode: "755"
-
+        mode: '755'
     - name: Copy specific ElasticSearch Systemd config file
       template:
-        src: "override.conf.j2"
-        dest: "{{ sysd_config_file }}"
+        src: override.conf.j2
+        dest: '{{ sysd_config_file }}'
         owner: root
-        group: "{{ es_group }}"
-        mode: "644"
-        force: yes
+        group: '{{ es_group }}'
+        mode: '644'
+        force: true
       notify:
-       - reload systemd configuration
-       - restart elasticsearch
-
+        - reload systemd configuration
+        - restart elasticsearch
 - name: Copy jvm.options File
-  become: yes
+  become: true
   template:
-    src: "{{ es_config_jvm }}"
-    dest: "{{ es_conf_dir }}/jvm.options"
+    src: '{{ es_config_jvm }}'
+    dest: '{{ es_conf_dir }}/jvm.options'
     owner: root
-    group: "{{ es_group }}"
-    mode: "660"
-    force: yes
+    group: '{{ es_group }}'
+    mode: '660'
+    force: true
   notify: restart elasticsearch
-
 - name: Copy log4j2.properties File
-  become: yes
+  become: true
   template:
-    src: "{{ es_config_log4j2 }}"
-    dest: "{{ es_conf_dir }}/log4j2.properties"
+    src: '{{ es_config_log4j2 }}'
+    dest: '{{ es_conf_dir }}/log4j2.properties'
     owner: root
-    group: "{{ es_group }}"
-    mode: "660"
-    force: yes
+    group: '{{ es_group }}'
+    mode: '660'
+    force: true
   notify: restart elasticsearch
   when: es_config_log4j2 != ''
